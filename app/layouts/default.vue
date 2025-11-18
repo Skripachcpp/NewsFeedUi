@@ -43,3 +43,45 @@
 }
 </style>
 
+<style>
+.btn {
+  padding: 1px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+
+.btn-blue {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-blue:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-green {
+  background: #10b981;
+  color: white;
+}
+
+.btn-green:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-white {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #4b5563;
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+</style>
