@@ -2,13 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type NewsArticle = {
+export type ArticleUpdateRequest = {
     id?: number;
     title?: string;
     content?: string;
     summary?: string | null;
-    publicationDate?: string;
-    userId?: number | null;
-    userName?: string | null;
+    tags?: Array<string> | null;
 };
 

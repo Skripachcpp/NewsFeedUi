@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ArticleCreateRequest } from '../models/ArticleCreateRequest';
-import type { NewsArticle } from '../models/NewsArticle';
+import type { ArticleUpdateRequest } from '../models/ArticleUpdateRequest';
 import type { NewsArticleDto } from '../models/NewsArticleDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -11,38 +11,18 @@ import { request as __request } from '../core/request';
 export class NewsService {
     /**
      * @param id
-     * @returns NewsArticle
+     * @returns NewsArticleDto
      * @throws ApiError
      */
     public static newsGetArticle(
         id: number,
-    ): CancelablePromise<Array<NewsArticle>> {
+    ): CancelablePromise<NewsArticleDto> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/v1/article/{id}',
             path: {
                 'id': id,
             },
-        });
-    }
-    /**
-     * @param id
-     * @param requestBody
-     * @returns NewsArticleDto
-     * @throws ApiError
-     */
-    public static newsUpdateArticle(
-        id: number,
-        requestBody: ArticleCreateRequest,
-    ): CancelablePromise<NewsArticleDto> {
-        return __request(OpenAPI, {
-            method: 'PATCH',
-            url: '/v1/article/{id}',
-            path: {
-                'id': id,
-            },
-            body: requestBody,
-            mediaType: 'application/json',
         });
     }
     /**
@@ -62,13 +42,13 @@ export class NewsService {
         });
     }
     /**
-     * @returns NewsArticle
+     * @returns NewsArticleDto
      * @throws ApiError
      */
-    public static newsGetArticles(): CancelablePromise<Array<NewsArticle>> {
+    public static newsGetArticles(): CancelablePromise<Array<NewsArticleDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/v1/article',
+            url: '/v1/articles',
         });
     }
     /**
@@ -81,6 +61,21 @@ export class NewsService {
     ): CancelablePromise<NewsArticleDto> {
         return __request(OpenAPI, {
             method: 'POST',
+            url: '/v1/article',
+            body: requestBody,
+            mediaType: 'application/json',
+        });
+    }
+    /**
+     * @param requestBody
+     * @returns NewsArticleDto
+     * @throws ApiError
+     */
+    public static newsUpdateArticle(
+        requestBody: ArticleUpdateRequest,
+    ): CancelablePromise<NewsArticleDto> {
+        return __request(OpenAPI, {
+            method: 'PATCH',
             url: '/v1/article',
             body: requestBody,
             mediaType: 'application/json',

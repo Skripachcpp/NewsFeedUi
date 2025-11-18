@@ -8,7 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { ArticleCreateRequest } from './models/ArticleCreateRequest';
-export type { NewsArticle } from './models/NewsArticle';
+export type { ArticleUpdateRequest } from './models/ArticleUpdateRequest';
 export type { NewsArticleDto } from './models/NewsArticleDto';
 export type { Tag } from './models/Tag';
 
