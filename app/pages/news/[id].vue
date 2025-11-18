@@ -1,18 +1,17 @@
 <template>
   <div class="article-page">
+    <NuxtLink to="/" class="btn btn-link">← Вернуться к списку</NuxtLink>
+
     <div v-if="loading" class="loading">
       <p>Загрузка новостей...</p>
     </div>
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <NuxtLink to="/" class="btn btn-link">← Вернуться к списку</NuxtLink>
     </div>
 
     <div v-if="article">
       <h2>{{ article.title }}</h2>
       <div>{{ article.content }}</div>
-      <div>{{ article.publicationDate }}</div>
-      <div>{{ article.userName }}</div>
 
       <div class="news-info">
         <InfoItem label="Автор" :value="article.userName" />
