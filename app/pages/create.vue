@@ -19,7 +19,7 @@
         <span v-else>Создать новость</span>
       </button>
 
-      <NuxtLink to="/" class="btn btn-grey" :disabled="isSubmitting" @click="handleCreate">
+      <NuxtLink to="/" class="btn btn-grey">
         <span>Вернуться к новостям</span>
       </NuxtLink>
     </div>
@@ -69,15 +69,7 @@ let handleCreate = async () => {
       createdArticleId.value = articleNew.id;
     })
     .catch((err) => {
-      let requestErrors = err?.body?.errors as {[fieldName: string]: string[]};
-
-      for (let key in requestErrors ?? []) {
-        let value = requestErrors[key];
-
-        if (errors.value == null) errors.value = [];
-        errors.value.push(`${key} ${value?.join(", ")}`);
-      }
-
+      errors.value = errorToStrings(err);
       success.value = false;
     })
     .finally(() => {
