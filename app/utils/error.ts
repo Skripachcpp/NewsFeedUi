@@ -18,3 +18,7 @@ export function errorToStrings(err: any): string[] {
 
   return errors;
 }
+
+export function errorToString(err: any): string {
+  return errorToStrings(err)?.join(", ")
+}

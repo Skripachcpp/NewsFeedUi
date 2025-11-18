@@ -6,7 +6,7 @@
         <h1>Теги</h1>
       </div>
 
-      <div v-if="loading" class="loading">
+      <div v-if="loadTagsProcessed" class="loading">
         <p>Загрузка тегов...</p>
       </div>
 
@@ -27,94 +27,91 @@
             </div>
             <div class="tag-actions">
               <button 
-                v-if="tag.id"
-                class="btn btn-delete"
-                :disabled="deletingId === tag.id"
-                @click="openDeleteModal(tag.id, tag.name ?? '')"
+                v-if="tag.id" 
+                class="btn btn-delete" 
+                :disabled="deletingId === tag.id" 
+                @click="() => {
+                  tagToDelete = { id: tag.id ?? -1, name: tag.name ?? '' };
+                  deleteModalOpen = true;
+                }"
               >
-                {{ deletingId === tag.id ? 'Удаление...' : 'Удалить' }}
+                {{ deletingId === tag.id ? "Удаление..." : "Удалить" }}
               </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <ConfirmDeleteModal
-      :is-open="isDeleteModalOpen"
+      :is-open="deleteModalOpen"
       :title="tagToDelete?.name || ''"
-      :loading="deletingId !== null"
+      :loading="deletingId != null"
       item-type="тег"
       @confirm="confirmDelete"
-      @cancel="cancelDelete"
+      @cancel="
+        () => {
+          deleteModalOpen = false;
+          tagToDelete = undefined;
+        }
+      "
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useApi } from '~/api/useApi'
-import type { TagDto } from '~/api/generated'
+import { ref, onMounted } from "vue";
+import { useApi } from "~/api/useApi";
+import type { TagDto } from "~/api/generated";
 
 definePageMeta({
-  layout: 'default',
-})
+  layout: "default",
+});
 
-const api = useApi()
-const tags = ref<TagDto[]>([])
-const loading = ref(true)
-const error = ref<string | null>(null)
-const deletingId = ref<number | null>(null)
-const isDeleteModalOpen = ref(false)
-const tagToDelete = ref<{ id: number; name: string } | null>(null)
+const api = useApi();
+const tags = ref<TagDto[]>([]);
 
+const error = ref<string>();
+const deletingId = ref<number>();
+const deleteModalOpen = ref(false);
+const tagToDelete = ref<{ id: number; name: string }>();
+
+const loadTagsProcessed = ref(true);
 const loadTags = async () => {
-  loading.value = true
-  error.value = null
-  try {
-    tags.value = await api.getTags()
-  } catch (err: any) {
-    error.value = err.message || 'Ошибка при загрузке тегов'
-    console.error('Ошибка загрузки тегов:', err)
-  } finally {
-    loading.value = false
-  }
-}
+  loadTagsProcessed.value = true;
+  error.value = undefined;
 
-const openDeleteModal = (id: number, name: string) => {
-  tagToDelete.value = { id, name }
-  isDeleteModalOpen.value = true
-}
-
-const cancelDelete = () => {
-  isDeleteModalOpen.value = false
-  tagToDelete.value = null
-}
+  await api.getTags().then((data) => {
+    tags.value = data
+  }).catch((err) => {
+    error.value = errorToString(err);
+  }).finally(() => {
+    loadTagsProcessed.value = false;
+  })
+};
 
 const confirmDelete = async () => {
-  if (!tagToDelete.value) return
-  
-  const { id } = tagToDelete.value
-  
+  if (!tagToDelete.value) return;
+
+  const { id } = tagToDelete.value;
+
   try {
-    deletingId.value = id
-    await api.deleteTag(id)
-    // Удаляем тег из списка
-    tags.value = tags.value.filter(tag => tag.id !== id)
-    // Закрываем модалку
-    isDeleteModalOpen.value = false
-    tagToDelete.value = null
+    deletingId.value = id;
+    await api.deleteTag(id);
+    tags.value = tags.value.filter((tag) => tag.id !== id);
+
+    deleteModalOpen.value = false;
+    tagToDelete.value = undefined;
   } catch (err: any) {
-    error.value = err.message || 'Ошибка при удалении тега'
-    alert(error.value)
+    error.value = errorToString(err);
   } finally {
-    deletingId.value = null
+    deletingId.value = undefined;
   }
-}
+};
 
 onMounted(() => {
-  loadTags()
-})
+  loadTags();
+});
 </script>
 
 <style scoped>
@@ -279,4 +276,3 @@ onMounted(() => {
   }
 }
 </style>
-
