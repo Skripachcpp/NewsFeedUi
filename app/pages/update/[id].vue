@@ -13,13 +13,13 @@
       <div v-for="(error, i) of errors" :key="i">{{ error }}</div>
     </div>
 
-    <div class="success-message" v-if="updatedArticleId != undefined">Новость успешно обновлена! ID: {{ updatedArticleId }}</div>
+    <div class="success-message" v-if="updatedArticleId != undefined">Новость успешно сохранеа! ID: {{ updatedArticleId }}</div>
 
     <div class="buttons">
-      <!-- <button class="btn btn-blue" :disabled="updateProcessed" @click="handleCreate">
-          <span v-if="updateProcessed">Создание...</span>
-          <span v-else>Создать новость</span>
-        </button> -->
+      <button class="btn btn-blue" :disabled="updateProcessed" @click="handleCreate">
+        <span v-if="updateProcessed">Сохранить...</span>
+        <span v-else>Сохранить изменения</span>
+      </button>
 
       <NuxtLink to="/" class="btn btn-grey">
         <span>Вернуться к новостям</span>
@@ -36,6 +36,8 @@ const route = useRoute();
 const api = useApi();
 
 const errors = ref<string[]>();
+
+let updateProcessed = ref(false);
 const updatedArticleId = ref<number>();
 
 const article = ref<ArticleUpdateRequest>();
@@ -67,38 +69,34 @@ const loadArticle = async () => {
     });
 };
 
-// let handleCreate = async () => {
-//   if (updateProcessed.value) return;
+let handleCreate = async () => {
+  if (updateProcessed.value) return;
 
-//   if (!article.value) return;
+  if (!article.value) return;
 
-//   success.value = false;
-//   errors.value = undefined;
-//   updatedArticleId.value = undefined;
+  errors.value = undefined;
+  updatedArticleId.value = undefined;
 
-//   let parsedTags = parseTags(articleTagsInput.value);
+  let parsedTags = parseTags(articleTagsInput.value);
 
-//   await api
-//     .updateArticle({
-//       id: article.value.id,
-//       title: article.value.title,
-//       content: article.value.content,
-//       summary: article.value.summary,
-//       tags: parsedTags.length > 0 ? parsedTags : undefined,
-//     })
-//     .then((articleNew) => {
-//       // article.value = defaultArticle();
-//       success.value = true;
-//       updatedArticleId.value = articleNew.id;
-//     })
-//     .catch((err) => {
-//       errors.value = errorToStrings(err);
-//       success.value = false;
-//     })
-//     .finally(() => {
-//       updateProcessed.value = false;
-//     });
-// };
+  await api
+    .updateArticle({
+      id: article.value.id,
+      title: article.value.title,
+      content: article.value.content,
+      summary: article.value.summary,
+      tags: parsedTags.length > 0 ? parsedTags : undefined,
+    })
+    .then((articleNew) => {
+      updatedArticleId.value = articleNew.id;
+    })
+    .catch((err) => {
+      errors.value = errorToStrings(err);
+    })
+    .finally(() => {
+      updateProcessed.value = false;
+    });
+};
 </script>
 
 <style scoped>
