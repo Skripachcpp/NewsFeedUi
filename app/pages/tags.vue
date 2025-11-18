@@ -109,9 +109,7 @@ const confirmDelete = async () => {
   }
 };
 
-onMounted(() => {
-  loadTags();
-});
+onMounted(() => loadTags());
 </script>
 
 <style scoped>
