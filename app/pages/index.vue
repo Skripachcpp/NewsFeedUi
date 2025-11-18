@@ -18,7 +18,7 @@ import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
 
 const loading = ref(false);
-const error = ref<string | null>("asdas");
+const error = ref<string | null>(null);
 const articles = ref<NewsArticleDto[]>([]);
 
 const api = useApi();
@@ -35,7 +35,7 @@ const loadNews = async () => {
     .finally(() => (loading.value = false));
 };
 
-// onMounted(() => loadNews());
+onMounted(() => loadNews());
 </script>
 
 <style scoped>
