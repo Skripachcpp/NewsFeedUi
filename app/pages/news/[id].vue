@@ -18,7 +18,7 @@
         <InfoItem label="Дата" :value="dateFormat(article.publicationDate)" />
       </div>
 
-      <Tags :tags="article.tags?.filter((it) => it)" />
+      <TagItems :tags="article.tags?.filter((it) => it)" />
     </div>
   </div>
 </template>

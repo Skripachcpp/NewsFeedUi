@@ -22,7 +22,7 @@
           <InfoItem label="Дата" :value="dateFormat(article.publicationDate)" />
         </div>
 
-        <Tags :tags="article.tags?.filter(it => it)" />
+        <TagItems :tags="article.tags?.filter(it => it)" />
 
         <NuxtLink :to="`news/${article.id}`" class="btn btn-link">Читать далее →</NuxtLink>
       </div>
