@@ -12,8 +12,7 @@
           
           <div class="modal-body">
             <p class="modal-message">
-              Вы уверены, что хотите удалить {{ itemType }}
-              <strong>"{{ title }}"</strong>?
+              Вы уверены, что хотите удалить {{ itemType }}<strong v-if="title"> "{{ title }}"</strong>?
             </p>
             <p class="modal-warning">
               Это действие нельзя отменить.
@@ -45,7 +44,7 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   isOpen: boolean
-  title: string
+  title?: string
   loading?: boolean
   itemType?: string
 }>(), {

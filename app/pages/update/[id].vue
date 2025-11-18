@@ -128,13 +128,4 @@ let handleCreate = async () => {
   display: flex;
   gap: 12px;
 }
-
-.btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-block;
-  text-align: center;
-}
 </style>

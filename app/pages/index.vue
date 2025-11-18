@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="heder">
+      <NuxtLink to="/create" class="btn btn-blue">Создать новость</NuxtLink>
+    </div>
+
     <div v-if="loading" class="loading">
       <p>Загрузка новостей...</p>
     </div>
@@ -11,28 +15,46 @@
 
     <div v-else class="news-list">
       <div class="news-item" v-for="article in articles" :key="article.id">
-        <h2 class="news-title">{{ article.title }}</h2>
+        <div class="news-item-left">
+          <h2 class="news-title">{{ article.title }}</h2>
 
-        <p v-if="article.summary" class="news-summary">
-          {{ article.summary }}
-        </p>
+          <p v-if="article.summary" class="news-summary">
+            {{ article.summary }}
+          </p>
 
-        <div class="news-info">
-          <InfoItem label="Автор" :value="article.userName" />
-          <InfoItem label="Дата" :value="dateFormat(article.publicationDate)" />
+          <div class="news-info">
+            <InfoItem label="Автор" :value="article.userName" />
+            <InfoItem label="Дата" :value="dateFormat(article.publicationDate)" />
+          </div>
+
+          <TagItems :tags="article.tags?.filter((it) => it)" />
+
+          <NuxtLink :to="`news/${article.id}`" class="btn btn-link">Читать далее →</NuxtLink>
         </div>
-
-        <TagItems :tags="article.tags?.filter(it => it)" />
-
-        <NuxtLink :to="`news/${article.id}`" class="btn btn-link">Читать далее →</NuxtLink>
+        <div class="news-item-right">
+          <div class="news-buttons">
+            <NuxtLink :to="'/update/' + article.id" class="btn btn-green">Изменить</NuxtLink>
+            <button class="btn btn-red" @click="deleteArticleId = article.id">Удалить</button>
+          </div>
+        </div>
       </div>
     </div>
+
+    <ConfirmDeleteModal
+      :is-open="deleteArticleId != null"
+      :loading="false"
+      item-type="новость"
+      @confirm="confirmDeleteArticle"
+      @cancel="() => {deleteArticleId = undefined;}"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
+
+let deleteArticleId = ref<number>();
 
 const loading = ref(false);
 const error = ref<string>();
@@ -52,11 +74,27 @@ const loadNews = async () => {
     .finally(() => (loading.value = false));
 };
 
+let confirmDeleteArticle = async () => {
+  if (deleteArticleId.value == null) return;
+
+  await api.deleteArticle(deleteArticleId.value);
+  articles.value = articles.value.filter(it => it.id != deleteArticleId.value)
+  deleteArticleId.value = undefined;
+}
+
 onMounted(() => loadNews());
 </script>
 
 <style scoped>
+.heder {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 .news-list {
+  position: relative;
   display: grid;
   gap: 24px;
 }
@@ -65,6 +103,15 @@ onMounted(() => loadNews());
   border: 1px #666 solid;
   padding: 8px 16px;
   border-radius: 5px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.news-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .news-summary {

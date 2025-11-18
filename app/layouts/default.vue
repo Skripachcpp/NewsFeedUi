@@ -51,7 +51,7 @@
 }
 
 .btn {
-  padding: 1px 8px;
+  padding: 8px 16px;
   border-radius: 6px;
   font-weight: 700;
   cursor: pointer;
@@ -68,6 +68,23 @@
   background: #2563eb;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.btn-red {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-red:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-red:disabled {
+  background: #fca5a5;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .btn-green {
