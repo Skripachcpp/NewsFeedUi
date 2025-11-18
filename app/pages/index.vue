@@ -10,20 +10,23 @@
     </div>
 
     <div v-else class="news-list">
-      <div v-for="article in articles" :key="article.id">
-        <div>{{ article.title }}</div>
-        <div>{{ article.summary }}</div>
-        <div>{{ article.userName }}</div>
-        <div>{{ article.publicationDate }}</div>
-        <div>
-          <div v-for="tag in article.tags" :key="tag">{{ tag }}</div>
+      <div class="news-item" v-for="article in articles" :key="article.id">
+        <h2 class="news-title">{{ article.title }}</h2>
+
+        <p v-if="article.summary" class="news-summary">
+          {{ article.summary }}
+        </p>
+
+        <div class="news-info">
+          <InfoItem label="Автор" :value="article.userName" />
+          <InfoItem label="Дата" :value="dateFormat(article.publicationDate)" />
         </div>
 
-        <!-- <pre>{{ JSON.stringify(articles, null, 2) }}</pre> -->
+        <div v-if="article.tags?.length" class="news-tags">
+          <div v-for="tag in article.tags" :key="tag">#{{ tag }}</div>
+        </div>
       </div>
     </div>
-
-    
   </div>
 </template>
 
@@ -64,7 +67,29 @@ onMounted(() => loadNews());
 
 .news-list {
   display: grid;
-  gap: 2rem;
+  gap: 24px;
 }
 
+.news-item {
+  border: 1px #666 solid;
+  padding: 8px 16px;
+  border-radius: 5px;
+}
+
+.news-summary {
+  margin-top: 8px;
+}
+
+.news-info {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.news-tags {
+  display: flex;
+  gap: 2px 8px;
+  color: rgb(99, 99, 218);
+}
 </style>
