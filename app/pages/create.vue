@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="create">
     <h1>Создать новость</h1>
 
     <FieldForm v-model="article.title" type="text" label="Заголовок" placeholder="Введите заголовок новости" required />
@@ -7,20 +7,22 @@
     <FieldForm v-model="article.summary" type="textarea" label="Краткое описание" placeholder="Введите краткое описание (опционально)" />
     <FieldForm v-model="tagsInput" type="text" label="Теги (опционально)" placeholder="Введите теги через запятую, например: новости, технологии, спорт" />
 
-    <div v-if="error" class="error">
+    <div v-if="error" class="error-message">
       <p>{{ error }}</p>
     </div>
 
-    <div v-if="success">Новость успешно создана! ID: {{ createdArticleId }}</div>
+    <div class="success-message" v-if="success">Новость успешно создана! ID: {{ createdArticleId }}</div>
 
-    <button class="btn btn-blue" :disabled="isSubmitting" @click="handleCreate">
-      <span v-if="isSubmitting">Создание...</span>
-      <span v-else>Создать новость</span>
-    </button>
+    <div class="buttons">
+      <button class="btn btn-blue" :disabled="isSubmitting" @click="handleCreate">
+        <span v-if="isSubmitting">Создание...</span>
+        <span v-else>Создать новость</span>
+      </button>
 
-    <NuxtLink to="/" class="btn btn-grey" :disabled="isSubmitting" @click="handleCreate">
-      <span>Вернуться к новостям</span>
-    </NuxtLink>
+      <NuxtLink to="/" class="btn btn-grey" :disabled="isSubmitting" @click="handleCreate">
+        <span>Вернуться к новостям</span>
+      </NuxtLink>
+    </div>
   </div>
 </template>
 
@@ -65,15 +67,53 @@ let handleCreate = async () => {
       article.value = defaultArticle();
       success.value = true;
       createdArticleId.value = articleNew.id;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       error.value = err.title || "Ошибка при создании новости";
       success.value = false;
     })
     .finally(() => {
       isSubmitting.value = false;
-      
     });
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.success-message {
+  background: #c6f6d5;
+  border: 1px solid #68d391;
+  color: #22543d;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.error-message {
+  background: #fed7d7;
+  border: 1px solid #fc8181;
+  color: #c53030;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+}
+</style>
