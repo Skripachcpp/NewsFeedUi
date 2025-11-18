@@ -2,16 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Tag } from '../models/Tag';
+import type { TagDto } from '../models/TagDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class TagsService {
     /**
-     * @returns Tag
+     * @returns TagDto
      * @throws ApiError
      */
-    public static tagsGetTags(): CancelablePromise<Array<Tag>> {
+    public static tagsGetTags(): CancelablePromise<Array<TagDto>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/Tags/v1/tags',

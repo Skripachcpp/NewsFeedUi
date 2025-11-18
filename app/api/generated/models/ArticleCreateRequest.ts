@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type ArticleCreateRequest = {
-    title?: string;
-    content?: string;
+    title: string;
+    content: string;
     summary?: string | null;
     tags?: Array<string> | null;
 };

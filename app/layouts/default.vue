@@ -81,7 +81,7 @@
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
-.btn-white {
+.btn-grey {
   background: #6b7280;
   color: white;
 }

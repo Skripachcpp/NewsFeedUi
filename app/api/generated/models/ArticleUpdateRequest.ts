@@ -2,11 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type ArticleUpdateRequest = {
-    id?: number;
-    title?: string;
-    content?: string;
-    summary?: string | null;
-    tags?: Array<string> | null;
-};
+import type { ArticleCreateRequest } from './ArticleCreateRequest';
+export type ArticleUpdateRequest = (ArticleCreateRequest & {
+    id: number;
+});
 

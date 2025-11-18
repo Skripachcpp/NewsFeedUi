@@ -173,7 +173,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Tag"
+                    "$ref": "#/components/schemas/TagDto"
                   }
                 }
               }
@@ -256,15 +256,24 @@
       "ArticleCreateRequest": {
         "type": "object",
         "additionalProperties": false,
+        "required": [
+          "title",
+          "content"
+        ],
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 500,
+            "minLength": 1
           },
           "content": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1
           },
           "summary": {
             "type": "string",
+            "maxLength": 1000,
+            "minLength": 0,
             "nullable": true
           },
           "tags": {
@@ -277,33 +286,26 @@
         }
       },
       "ArticleUpdateRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ArticleCreateRequest"
           },
-          "title": {
-            "type": "string"
-          },
-          "content": {
-            "type": "string"
-          },
-          "summary": {
-            "type": "string",
-            "nullable": true
-          },
-          "tags": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int32"
+              }
             }
           }
-        }
+        ]
       },
-      "Tag": {
+      "TagDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {

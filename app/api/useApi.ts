@@ -5,7 +5,7 @@ import {
   type NewsArticleDto,
   type ArticleCreateRequest,
   type ArticleUpdateRequest,
-  type Tag,
+  type TagDto,
 } from '~/api/generated'
 
 export const useApi = () => {
@@ -34,7 +34,7 @@ export const useApi = () => {
     await NewsService.newsDeleteArticle(id)
   }
 
-  const getTags = async (): Promise<Tag[]> => {
+  const getTags = async (): Promise<TagDto[]> => {
     return await TagsService.tagsGetTags()
   }
 
