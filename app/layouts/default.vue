@@ -44,6 +44,12 @@
 </style>
 
 <style>
+.error {
+  gap: 12px;
+  font-weight: 700;
+  color: rgb(181, 20, 20);
+}
+
 .btn {
   padding: 1px 8px;
   border-radius: 6px;
@@ -83,5 +89,13 @@
 .btn-secondary:hover:not(:disabled) {
   background: #4b5563;
   box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+}
+
+.btn-link {
+  color: #667eea;
+  padding: 0.5rem 0;
+  background: none;
+  font-weight: 600;
+  text-decoration: none;
 }
 </style>
