@@ -9,7 +9,21 @@
       <button class="btn btn-green" @click="loadNews">Попробовать снова</button>
     </div>
 
-    <div>articles = {{ articles }}</div>
+    <div v-else class="news-list">
+      <div v-for="article in articles" :key="article.id">
+        <div>{{ article.title }}</div>
+        <div>{{ article.summary }}</div>
+        <div>{{ article.userName }}</div>
+        <div>{{ article.publicationDate }}</div>
+        <div>
+          <div v-for="tag in article.tags" :key="tag">{{ tag }}</div>
+        </div>
+
+        <!-- <pre>{{ JSON.stringify(articles, null, 2) }}</pre> -->
+      </div>
+    </div>
+
+    
   </div>
 </template>
 
@@ -47,4 +61,10 @@ onMounted(() => loadNews());
   font-weight: 700;
   color: rgb(181, 20, 20);
 }
+
+.news-list {
+  display: grid;
+  gap: 2rem;
+}
+
 </style>
