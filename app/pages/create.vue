@@ -7,8 +7,8 @@
     <FieldForm v-model="article.summary" type="textarea" label="Краткое описание" placeholder="Введите краткое описание (опционально)" />
     <FieldForm v-model="tagsInput" type="text" label="Теги (опционально)" placeholder="Введите теги через запятую, например: новости, технологии, спорт" />
 
-    <div v-if="error" class="error-message">
-      <p>{{ error }}</p>
+    <div v-if="errors" class="error-message">
+       <div v-for="(error, i) of errors" :key="i">{{ error }}</div>
     </div>
 
     <div class="success-message" v-if="success">Новость успешно создана! ID: {{ createdArticleId }}</div>
@@ -32,7 +32,7 @@ import { useApi } from "~/api/useApi";
 
 const api = useApi();
 
-const error = ref<string>();
+const errors = ref<string[]>();
 const success = ref(false);
 const createdArticleId = ref<number>();
 
@@ -51,7 +51,7 @@ let handleCreate = async () => {
   if (isSubmitting.value) return;
 
   success.value = false;
-  error.value = undefined;
+  errors.value = undefined;
   createdArticleId.value = undefined;
 
   let parsedTags = parseTags(tagsInput.value);
@@ -69,7 +69,15 @@ let handleCreate = async () => {
       createdArticleId.value = articleNew.id;
     })
     .catch((err) => {
-      error.value = err.title || "Ошибка при создании новости";
+      let requestErrors = err?.body?.errors as {[fieldName: string]: string[]};
+
+      for (let key in requestErrors ?? []) {
+        let value = requestErrors[key];
+
+        if (errors.value == null) errors.value = [];
+        errors.value.push(`${key} ${value?.join(", ")}`);
+      }
+
       success.value = false;
     })
     .finally(() => {
