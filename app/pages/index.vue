@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="heder">
-      <NuxtLink to="/create" class="btn btn-blue">Создать новость</NuxtLink>
+      <NuxtLink to="/create" class="btn btn-blue news-btn-create">Создать</NuxtLink>
     </div>
 
     <div v-if="loading" class="loading">
@@ -129,5 +129,10 @@ onMounted(() => loadNews());
   display: flex;
   gap: 2px 8px;
   color: rgb(99, 99, 218);
+}
+
+.news-btn-create {
+  margin-right: 18px;
+  width: 100px;
 }
 </style>
