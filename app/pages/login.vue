@@ -37,6 +37,7 @@
 <script setup lang="ts">
 // это вайп
 import { useAuth } from "~/api/useAuth";
+import { errorToString } from "~/utils/error";
 
 definePageMeta({
   layout: false,
@@ -62,14 +63,16 @@ const handleLogin = async () => {
   error.value = "";
   loading.value = true;
 
-  try {
-    await login(form.username, form.password);
-    router.push("/");
-  } catch (e: any) {
-    error.value = e.message || "Ошибка входа";
-  } finally {
-    loading.value = false;
-  }
+  await login(form.username, form.password)
+    .then(() => {
+      router.push("/");
+    })
+    .catch((err) => {
+      error.value = errorToString(err);
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
 </script>
 

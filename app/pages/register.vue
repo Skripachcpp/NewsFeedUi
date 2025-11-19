@@ -68,14 +68,16 @@ const handleRegister = async () => {
   error.value = "";
   loading.value = true;
 
-  try {
-    await register(form.username, form.email, form.password);
-    router.push("/");
-  } catch (e: any) {
-    error.value = e.message || "Ошибка регистрации";
-  } finally {
-    loading.value = false;
-  }
+  await register(form.username, form.email, form.password)
+    .then(() => {
+      router.push("/");
+    })
+    .catch((err) => {
+      error.value = errorToString(err);
+    })
+    .finally(() => {
+      loading.value = false;
+    });
 };
 </script>
 
