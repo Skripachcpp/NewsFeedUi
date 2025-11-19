@@ -65,6 +65,7 @@ let handleCreate = async () => {
     })
     .then((articleNew) => {
       article.value = defaultArticle();
+      tagsInput.value = "";
       success.value = true;
       createdArticleId.value = articleNew.id;
     })
