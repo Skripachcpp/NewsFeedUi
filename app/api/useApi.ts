@@ -11,7 +11,7 @@ import {
 export const useApi = () => {
   const config = useRuntimeConfig()
   if (config.public.apiBaseUrl) {
-    OpenAPI.BASE = process.env.API_BASE_URL || 'http://localhost:5068'
+    OpenAPI.BASE = config.public.apiBaseUrl
   }
 
   const getArticles = async (): Promise<NewsArticleDto[]> => {
