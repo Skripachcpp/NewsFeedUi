@@ -73,3 +73,15 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+## Docker
+
+### Сборка образа
+
+```bash
+docker build -t newsfeed-ui .
+```
+
+```bash
+docker run -p 3000:3000 newsfeed-ui
+```
