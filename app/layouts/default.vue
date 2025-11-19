@@ -113,11 +113,6 @@ let { isAuthenticated, logout } = useAuth();
   color: white;
 }
 
-.btn-secondary:hover:not(:disabled) {
-  background: #4b5563;
-  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
-}
-
 .btn-link {
   color: #667eea;
   padding: 0.5rem 0;

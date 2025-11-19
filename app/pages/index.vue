@@ -128,12 +128,6 @@ onMounted(() => loadNews());
   gap: 1rem;
 }
 
-.news-tags {
-  display: flex;
-  gap: 2px 8px;
-  color: rgb(99, 99, 218);
-}
-
 .news-btn-create {
   margin-right: 18px;
   width: 100px;
