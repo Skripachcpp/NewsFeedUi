@@ -12,10 +12,7 @@ export interface AuthResponse {
 
 export type AuthUserInfo = {
   token?: string;
-  userInfo?: {
-    name: string;
-    id: number;
-  };
+  name: string;
 };
 
 const USER_KEY = "auth_user";
@@ -47,49 +44,45 @@ export const useAuth = () => {
   const userInfo = useState<AuthUserInfo | undefined>(USER_KEY, () => undefined);
   userInfo.value = getInfoFromLocalStorage();
 
-  const login = async (username: string, password: string): Promise<AuthUserInfo | undefined> => {
-    const response = await $fetch<AuthResponse>(`${authApiUrl}/api/auth/login`, {
+  const login = async (name: string, password: string): Promise<AuthUserInfo | undefined> => {
+    const token = await $fetch<string>(`${authApiUrl}/Auth/login`, {
       method: "POST",
       body: {
-        username,
+        username: name,
         password,
       },
     });
 
-    if (response?.token == null) return undefined;
+    if (token == null) return undefined;
 
-    userInfo.value = {};
-    userInfo.value.token = response.token;
-    userInfo.value.userInfo = {
-      id: response.userId,
-      name: response.username,
-    };
+    let info: AuthUserInfo = {
+      token,
+      name
+    }
 
-    setInfoFromLocalStorage(userInfo.value);
-
-    return userInfo.value;
+    userInfo.value = info;
+    setInfoFromLocalStorage(info);
+    return info;
   };
 
-  const register = async (username: string, email: string, password: string): Promise<AuthUserInfo> => {
-    const response = await $fetch<AuthResponse>(`${authApiUrl}/api/auth/register`, {
+  const register = async (name: string, email: string, password: string): Promise<AuthUserInfo> => {
+    const token = await $fetch<string>(`${authApiUrl}/Auth/register`, {
       method: "POST",
       body: {
-        username,
+        name,
         email,
         password,
       },
     });
 
-    userInfo.value = {};
-    userInfo.value.token = response.token;
-    userInfo.value.userInfo = {
-      id: response.userId,
-      name: response.username,
-    };
-
-    setInfoFromLocalStorage(userInfo.value);
-
-    return userInfo.value;
+    let info: AuthUserInfo = {
+      token,
+      name
+    }
+    
+    setInfoFromLocalStorage(info);
+    userInfo.value = info
+    return info;
   };
 
   const logout = () => {
@@ -100,8 +93,10 @@ export const useAuth = () => {
   };
 
   const isAuthenticated = computed(() => !!userInfo.value);
+  const token = computed(() => userInfo?.value?.token);
 
   return {
+    token,
     userInfo,
     isAuthenticated,
     login,
