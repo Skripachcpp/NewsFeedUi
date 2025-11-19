@@ -1,16 +1,26 @@
 <template>
   <div class="layout">
-    <header class="header" />
+    <header class="header">
+      <div v-if="!isAuthenticated" class="buttons">
+        <NuxtLink to="login" class="btn btn-link">Войти</NuxtLink>
+        <NuxtLink to="register" class="btn btn-link">Зарегистрироваться</NuxtLink>
+      </div>
+      <div v-else class="buttons">
+        <button class="btn btn-link" @click="logout">Выйти</button>
+      </div>
+    </header>
 
     <main class="main">
       <slot />
     </main>
 
-    <footer class="footer"/>
+    <footer class="footer" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useAuth } from "~/api/useAuth";
+let { isAuthenticated, logout } = useAuth();
 </script>
 
 <style scoped>
@@ -114,5 +124,13 @@
   background: none;
   font-weight: 600;
   text-decoration: none;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  margin-right: 42px;
 }
 </style>
