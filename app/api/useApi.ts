@@ -1,10 +1,18 @@
 import { NewsService, TagsService, OpenAPI, type NewsArticleDto, type ArticleCreateRequest, type ArticleUpdateRequest, type TagDto } from "~/api/generated";
+import { useAuth } from "./useAuth";
 
 export const useApi = () => {
   const config = useRuntimeConfig();
   if (config.public.apiBaseUrl) {
     OpenAPI.BASE = config.public.apiBaseUrl;
   }
+
+  // токен авторизации
+  const auth = useAuth();
+  OpenAPI.TOKEN = async () => {
+    return auth.token.value ?? "";
+  };
+  
 
   const getArticles = async (): Promise<NewsArticleDto[]> => {
     return await NewsService.newsGetArticles();

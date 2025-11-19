@@ -89,7 +89,7 @@ export const useAuth = () => {
     setInfoFromLocalStorage(undefined);
     userInfo.value = undefined;
 
-    navigateTo("/login");
+    navigateTo("/");
   };
 
   const isAuthenticated = computed(() => !!userInfo.value);

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="heder">
+    <div v-if="isAuthenticated" class="heder">
+      <NuxtLink to="/tags" class="btn btn-red news-btn-create">Теги</NuxtLink>
       <NuxtLink to="/create" class="btn btn-blue news-btn-create">Создать</NuxtLink>
     </div>
 
@@ -32,7 +33,7 @@
           <NuxtLink :to="`news/${article.id}`" class="btn btn-link">Читать далее →</NuxtLink>
         </div>
         <div class="news-item-right">
-          <div class="news-buttons">
+          <div v-if="isAuthenticated" class="news-buttons">
             <NuxtLink :to="'/update/' + article.id" class="btn btn-green">Изменить</NuxtLink>
             <button class="btn btn-red" @click="deleteArticleId = article.id">Удалить</button>
           </div>
@@ -53,6 +54,7 @@
 <script setup lang="ts">
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
+import { useAuth } from "~/api/useAuth";
 
 let deleteArticleId = ref<number>();
 
@@ -61,6 +63,7 @@ const error = ref<string>();
 const articles = ref<NewsArticleDto[]>([]);
 
 const api = useApi();
+let {isAuthenticated} = useAuth();
 
 const loadNews = async () => {
   loading.value = true;
