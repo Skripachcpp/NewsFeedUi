@@ -6,6 +6,7 @@
         <NuxtLink to="register" class="btn btn-link">Зарегистрироваться</NuxtLink>
       </div>
       <div v-else class="buttons">
+        <div class="user-name">{{ userName }}</div>
         <button class="btn btn-link" @click="logout">Выйти</button>
       </div>
     </header>
@@ -20,7 +21,7 @@
 
 <script setup lang="ts">
 import { useAuth } from "~/api/useAuth";
-let { isAuthenticated, logout } = useAuth();
+let { isAuthenticated, userName, logout } = useAuth();
 </script>
 
 <style scoped>
@@ -49,6 +50,10 @@ let { isAuthenticated, logout } = useAuth();
   border-top: 1px solid #e2e8f0;
   padding: 1rem;
   text-align: center;
+  color: #718096;
+}
+
+.user-name {
   color: #718096;
 }
 </style>

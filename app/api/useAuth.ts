@@ -94,9 +94,11 @@ export const useAuth = () => {
 
   const isAuthenticated = computed(() => !!userInfo.value);
   const token = computed(() => userInfo?.value?.token);
+  const userName = computed(() => userInfo?.value?.name);
 
   return {
     token,
+    userName,
     userInfo,
     isAuthenticated,
     login,
