@@ -12,7 +12,7 @@ const __dirname = dirname(__filename);
 const rootDir = join(__dirname, '..');
 
 let config = {
-  url: 'http://localhost:5068/swagger/v1/swagger.json',
+  url: 'http://localhost:5058/swagger/v1/swagger.json',
   output: 'app/api/generated',
   input: 'swagger.json'
 };

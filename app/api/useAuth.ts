@@ -45,7 +45,7 @@ export const useAuth = () => {
   userInfo.value = getInfoFromLocalStorage();
 
   const login = async (name: string, password: string): Promise<AuthUserInfo | undefined> => {
-    const token = await $fetch<string>(`${authApiUrl}/Auth/login`, {
+    const token = await $fetch<string>(`${authApiUrl}/auth/login`, {
       method: "POST",
       body: {
         username: name,
@@ -66,7 +66,7 @@ export const useAuth = () => {
   };
 
   const register = async (name: string, email: string, password: string): Promise<AuthUserInfo> => {
-    const token = await $fetch<string>(`${authApiUrl}/Auth/register`, {
+    const token = await $fetch<string>(`${authApiUrl}/auth/register`, {
       method: "POST",
       body: {
         name,

@@ -19,7 +19,7 @@ export class NewsService {
     ): CancelablePromise<NewsArticleDto> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/v1/article/{id}',
+            url: '/news/article/{id}',
             path: {
                 'id': id,
             },
@@ -35,7 +35,7 @@ export class NewsService {
     ): CancelablePromise<Blob> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/v1/article/{id}',
+            url: '/news/article/{id}',
             path: {
                 'id': id,
             },
@@ -48,7 +48,7 @@ export class NewsService {
     public static newsGetArticles(): CancelablePromise<Array<NewsArticleDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/v1/articles',
+            url: '/news/articles',
         });
     }
     /**
@@ -61,7 +61,7 @@ export class NewsService {
     ): CancelablePromise<NewsArticleDto> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/v1/article',
+            url: '/news/article',
             body: requestBody,
             mediaType: 'application/json',
         });
@@ -76,7 +76,7 @@ export class NewsService {
     ): CancelablePromise<NewsArticleDto> {
         return __request(OpenAPI, {
             method: 'PATCH',
-            url: '/v1/article',
+            url: '/news/article',
             body: requestBody,
             mediaType: 'application/json',
         });

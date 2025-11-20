@@ -7,11 +7,11 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5068"
+      "url": "http://localhost:5058"
     }
   ],
   "paths": {
-    "/v1/article/{id}": {
+    "/news/article/{id}": {
       "get": {
         "tags": [
           "News"
@@ -74,7 +74,7 @@
         }
       }
     },
-    "/v1/articles": {
+    "/news/articles": {
       "get": {
         "tags": [
           "News"
@@ -97,7 +97,7 @@
         }
       }
     },
-    "/v1/article": {
+    "/news/article": {
       "post": {
         "tags": [
           "News"
@@ -159,7 +159,7 @@
         }
       }
     },
-    "/Tags/v1/tags": {
+    "/tags/tags": {
       "get": {
         "tags": [
           "Tags"
@@ -182,7 +182,7 @@
         }
       }
     },
-    "/Tags/v1/tags/{id}": {
+    "/tags/tags/{id}": {
       "delete": {
         "tags": [
           "Tags"
@@ -256,24 +256,15 @@
       "ArticleCreateRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "title",
-          "content"
-        ],
         "properties": {
           "title": {
-            "type": "string",
-            "maxLength": 500,
-            "minLength": 1
+            "type": "string"
           },
           "content": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
           "summary": {
             "type": "string",
-            "maxLength": 1000,
-            "minLength": 0,
             "nullable": true
           },
           "tags": {
@@ -293,9 +284,6 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "id"
-            ],
             "properties": {
               "id": {
                 "type": "integer",

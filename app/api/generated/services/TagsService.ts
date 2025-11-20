@@ -14,7 +14,7 @@ export class TagsService {
     public static tagsGetTags(): CancelablePromise<Array<TagDto>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/Tags/v1/tags',
+            url: '/tags/tags',
         });
     }
     /**
@@ -27,7 +27,7 @@ export class TagsService {
     ): CancelablePromise<Blob> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/Tags/v1/tags/{id}',
+            url: '/tags/tags/{id}',
             path: {
                 'id': id,
             },

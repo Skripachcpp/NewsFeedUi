@@ -4,6 +4,6 @@
 /* eslint-disable */
 import type { ArticleCreateRequest } from './ArticleCreateRequest';
 export type ArticleUpdateRequest = (ArticleCreateRequest & {
-    id: number;
+    id?: number;
 });
 
