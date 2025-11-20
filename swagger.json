@@ -80,16 +80,35 @@
           "News"
         ],
         "operationId": "News_GetArticles",
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 100
+            },
+            "x-position": 2
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/NewsArticleDto"
-                  }
+                  "$ref": "#/components/schemas/PageDtoOfNewsArticleDto"
                 }
               }
             }
@@ -249,6 +268,30 @@
             "nullable": true,
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "PageDtoOfNewsArticleDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewsArticleDto"
             }
           }
         }

@@ -15,7 +15,8 @@ export const useApi = () => {
   
 
   const getArticles = async (): Promise<NewsArticleDto[]> => {
-    return await NewsService.newsGetArticles();
+    // еще и пагинацию на фронте реализовывать наверное лишнее
+    return (await NewsService.newsGetArticles())?.items ?? [];
   };
 
   const getArticle = async (id: number): Promise<NewsArticleDto> => {
