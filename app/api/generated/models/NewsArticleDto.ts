@@ -9,6 +9,6 @@ export type NewsArticleDto = {
     summary?: string | null;
     publicationDate?: string;
     userName?: string | null;
-    tags?: Array<string> | null;
+    tags?: Array<string>;
 };
 
