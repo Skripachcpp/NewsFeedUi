@@ -6,7 +6,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:5058',
-      authApiBaseUrl: process.env.NUXT_PUBLIC_AUTH_API_BASE_URL || 'http://localhost:5164'
+      authApiBaseUrl: process.env.NUXT_PUBLIC_AUTH_API_BASE_URL || 'http://localhost:5164',
+      authUserStorageKey: process.env.NUXT_PUBLIC_AUTH_USER_STORAGE_KEY || 'auth_user'
     }
   }
 })

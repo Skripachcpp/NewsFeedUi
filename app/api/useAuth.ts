@@ -15,10 +15,8 @@ export type AuthUserInfo = {
   name: string;
 };
 
-const USER_KEY = "auth_user";
-
-function getInfoFromLocalStorage(): AuthUserInfo | undefined {
-  const userJson = localStorage.getItem(USER_KEY) ?? undefined;
+function getInfoFromLocalStorage(storageKey: string): AuthUserInfo | undefined {
+  const userJson = localStorage.getItem(storageKey) ?? undefined;
   let userInfo = undefined;
 
   if (userJson) {
@@ -32,17 +30,18 @@ function getInfoFromLocalStorage(): AuthUserInfo | undefined {
   return userInfo;
 }
 
-function setInfoFromLocalStorage(info?: AuthUserInfo) {
-  if (info == null) localStorage.removeItem(USER_KEY);
-  else localStorage.setItem(USER_KEY, JSON.stringify(info));
+function setInfoFromLocalStorage(info: AuthUserInfo | undefined, storageKey: string) {
+  if (info == null) localStorage.removeItem(storageKey);
+  else localStorage.setItem(storageKey, JSON.stringify(info));
 }
 
 export const useAuth = () => {
   const config = useRuntimeConfig();
   const authApiUrl = config.public.authApiBaseUrl;
+  const authUserStorageKey = config.public.authUserStorageKey || "auth_user";
 
-  const userInfo = useState<AuthUserInfo | undefined>(USER_KEY, () => undefined);
-  userInfo.value = getInfoFromLocalStorage();
+  const userInfo = useState<AuthUserInfo | undefined>(authUserStorageKey, () => undefined);
+  userInfo.value = getInfoFromLocalStorage(authUserStorageKey);
 
   const login = async (name: string, password: string): Promise<AuthUserInfo | undefined> => {
     const token = await $fetch<string>(`${authApiUrl}/auth/login`, {
@@ -57,11 +56,11 @@ export const useAuth = () => {
 
     let info: AuthUserInfo = {
       token,
-      name
-    }
+      name,
+    };
 
     userInfo.value = info;
-    setInfoFromLocalStorage(info);
+    setInfoFromLocalStorage(info, authUserStorageKey);
     return info;
   };
 
@@ -77,16 +76,16 @@ export const useAuth = () => {
 
     let info: AuthUserInfo = {
       token,
-      name
-    }
-    
-    setInfoFromLocalStorage(info);
-    userInfo.value = info
+      name,
+    };
+
+    setInfoFromLocalStorage(info, authUserStorageKey);
+    userInfo.value = info;
     return info;
   };
 
   const logout = () => {
-    setInfoFromLocalStorage(undefined);
+    setInfoFromLocalStorage(undefined, authUserStorageKey);
     userInfo.value = undefined;
 
     navigateTo("/");
