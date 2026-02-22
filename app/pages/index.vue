@@ -67,11 +67,17 @@ const {
   pending,
   error: loadError,
   refresh: loadNews,
-} = await useAsyncData<NewsArticleDto[]>("news-list", api.getArticles, {
-  default: () => [],
-});
+} = await useAsyncData<NewsArticleDto[]>(
+  "news-list",
+  async () => {
+    return await api.getArticles();
+  },
+  {
+    default: () => [],
+  },
+);
 
-let error = computed(() => errorToString(loadError) || "Ошибка при загрузке новостей");
+let error = computed(() => errorToString(loadError, "Ошибка при загрузке новостей"));
 
 let { deleteArticleId, confirmDeleteArticle } = useDeleteArticle(articles);
 </script>

@@ -70,8 +70,6 @@ let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
 const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdateRequest>(
   () => `update-article-${id.value}`,
   async () => {
-    errors.value = undefined;
-
     const numId = id.value;
     if (isNaN(numId)) throw new Error("Не валидный ID статьи");
 

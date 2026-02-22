@@ -31,5 +31,6 @@ export function errorToStrings(err: any): string[] {
 }
 
 export function errorToString(err: any, def = ""): string | undefined {
-  return err ? errorToStrings(err)?.join(", ") || def : undefined;
+  let error = unref(err);
+  return error ? errorToStrings(error)?.join(", ") || def : undefined;
 }
