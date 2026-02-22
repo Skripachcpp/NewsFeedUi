@@ -73,9 +73,7 @@ const {
   async () => {
     return await api.getArticles();
   },
-  {
-    default: () => [],
-  },
+  { default: () => [] },
 );
 
 let error = computed(() => errorToString(loadError, "Ошибка при загрузке новостей"));

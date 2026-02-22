@@ -14,7 +14,7 @@
             required
             class="form-input"
             placeholder="Введите имя пользователя"
-            :disabled="loading"
+            :disabled="registerPending"
           />
         </div>
 
@@ -28,7 +28,7 @@
             required
             class="form-input"
             placeholder="email@example.com"
-            :disabled="loading"
+            :disabled="registerPending"
           />
         </div>
 
@@ -42,7 +42,7 @@
             required
             class="form-input"
             placeholder="Введите пароль"
-            :disabled="loading"
+            :disabled="registerPending"
           />
         </div>
 
@@ -53,11 +53,11 @@
         <div class="form-actions">
           <button
             type="submit"
-            :disabled="loading"
+            :disabled="registerPending"
             class="btn btn-primary"
             @click.prevent="register"
           >
-            <span v-if="loading">Регистрация...</span>
+            <span v-if="registerPending">Регистрация...</span>
             <span v-else>Зарегистрироваться</span>
           </button>
         </div>
@@ -90,7 +90,7 @@ const form = reactive({
 });
 
 const error = ref<string>();
-const loading = ref(false);
+const registerPending = ref(false);
 
 if (isAuthenticated.value) {
   router.push("/");
@@ -98,7 +98,7 @@ if (isAuthenticated.value) {
 
 const register = async () => {
   error.value = "";
-  loading.value = true;
+  registerPending.value = true;
 
   await registerUser(form.username, form.email, form.password)
     .then(() => {
@@ -108,7 +108,7 @@ const register = async () => {
       error.value = errorToString(err);
     })
     .finally(() => {
-      loading.value = false;
+      registerPending.value = false;
     });
 };
 </script>

@@ -61,10 +61,6 @@ import type { TagDto } from "~/api/generated";
 import { errorToString } from "~/utils/error";
 import { useDeleteTags } from "~/composables/useDeleteTags";
 
-definePageMeta({
-  layout: "default",
-});
-
 const api = useApi();
 
 const {
