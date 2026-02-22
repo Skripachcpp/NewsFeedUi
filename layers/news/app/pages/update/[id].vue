@@ -56,13 +56,15 @@
 import type { ArticleUpdateRequest } from "~/api/generated";
 import { useApi } from "~/api/useApi";
 import { errorToStrings } from "~/utils/error";
-import { useUpdateArticle } from "~/composables/useUpdateArticle";
 
 const api = useApi();
 
 const route = useRoute();
 const id = computed(() => Number(route.params.id));
 let article = ref<ArticleUpdateRequest>();
+
+let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
+  useUpdateArticle(article);
 
 const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdateRequest>(
   () => `update-article-${id.value}`,
@@ -86,9 +88,6 @@ const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdate
   },
   { watch: [id], default: () => undefined },
 );
-
-let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
-  useUpdateArticle(article);
 
 watch(loadError, (e) => (errors.value = errorToStrings(e)), { immediate: true });
 watch(articleData, (val) => (article.value = val), { immediate: true });

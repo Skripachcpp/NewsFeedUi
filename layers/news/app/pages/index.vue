@@ -55,7 +55,6 @@
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
 import { useAuth } from "~/api/useAuth";
-import { useDeleteArticle } from "~/composables/useDeleteArticle";
 import { dateFormat } from "~/utils/date";
 import { errorToString } from "~/utils/error";
 

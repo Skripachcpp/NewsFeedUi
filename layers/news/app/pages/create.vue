@@ -51,8 +51,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCreateArticle } from "~/composables/useCreateArticle";
-
 let { errors, success, createdArticleId, article, tagsInput, createdProcessing, create } =
   useCreateArticle();
 </script>
