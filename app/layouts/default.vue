@@ -3,9 +3,7 @@
     <header class="header">
       <div v-if="!isAuthenticated" class="buttons">
         <NuxtLink to="login" class="btn btn-link">Войти</NuxtLink>
-        <NuxtLink to="register" class="btn btn-link"
-          >Зарегистрироваться</NuxtLink
-        >
+        <NuxtLink to="register" class="btn btn-link">Зарегистрироваться</NuxtLink>
       </div>
       <div v-else class="buttons">
         <div class="user-name">{{ userName }}</div>
@@ -24,7 +22,7 @@
 <script setup lang="ts">
 import { useAuth } from "~/api/useAuth";
 const { isAuthenticated, userName, logout, loadUserInfo } = useAuth();
-if (isAuthenticated.value) loadUserInfo();
+if (unref(isAuthenticated)) loadUserInfo();
 </script>
 
 <style scoped>

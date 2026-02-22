@@ -7,7 +7,7 @@ export function useCreateArticle() {
   const api = useApi();
 
   const errors = ref<string[]>();
-  const success = ref(false);
+  const createdArticleSuccess = ref(false);
   const createdArticleId = ref<number>();
 
   let defaultArticle = (): ArticleCreateRequest => ({
@@ -24,7 +24,7 @@ export function useCreateArticle() {
   let create = async () => {
     if (createdProcessing.value) return;
 
-    success.value = false;
+    createdArticleSuccess.value = false;
     errors.value = undefined;
     createdArticleId.value = undefined;
 
@@ -40,12 +40,12 @@ export function useCreateArticle() {
       .then((articleNew) => {
         article.value = defaultArticle();
         tagsInput.value = "";
-        success.value = true;
+        createdArticleSuccess.value = true;
         createdArticleId.value = articleNew.id;
       })
       .catch((err) => {
         errors.value = errorToStrings(err);
-        success.value = false;
+        createdArticleSuccess.value = false;
       })
       .finally(() => {
         createdProcessing.value = false;
@@ -54,7 +54,7 @@ export function useCreateArticle() {
 
   return {
     errors,
-    success,
+    createdArticleSuccess,
     createdArticleId,
     article,
     tagsInput,

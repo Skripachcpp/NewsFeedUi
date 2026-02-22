@@ -33,7 +33,7 @@
       <div v-for="(error, i) of errors" :key="i">{{ error }}</div>
     </div>
 
-    <div class="success-message" v-if="success">
+    <div class="success-message" v-if="createdArticleSuccess">
       Новость успешно создана! ID: {{ createdArticleId }}
     </div>
 
@@ -51,8 +51,15 @@
 </template>
 
 <script setup lang="ts">
-let { errors, success, createdArticleId, article, tagsInput, createdProcessing, create } =
-  useCreateArticle();
+let {
+  errors,
+  article,
+  tagsInput,
+  createdArticleId,
+  createdArticleSuccess,
+  createdProcessing,
+  create,
+} = useCreateArticle();
 </script>
 
 <style scoped>

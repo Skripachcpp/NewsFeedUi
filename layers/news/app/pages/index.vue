@@ -43,7 +43,6 @@
 
     <ConfirmDeleteModal
       :is-open="deleteArticleId != null"
-      :pending="false"
       item-type="новость"
       @confirm="confirmDeleteArticle"
       @cancel="deleteArticleId = undefined"

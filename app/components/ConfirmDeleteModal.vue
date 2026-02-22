@@ -5,13 +5,7 @@
         <div class="modal-container">
           <div class="modal-header">
             <h2 class="modal-title">Подтверждение удаления</h2>
-            <button
-              class="modal-close"
-              @click="handleCancel"
-              aria-label="Закрыть"
-            >
-              ×
-            </button>
+            <button class="modal-close" @click="handleCancel" aria-label="Закрыть">×</button>
           </div>
 
           <div class="modal-body">
@@ -23,18 +17,8 @@
           </div>
 
           <div class="modal-footer">
-            <button
-              class="btn btn-cancel"
-              @click="handleCancel"
-              :disabled="loading"
-            >
-              Отмена
-            </button>
-            <button
-              class="btn btn-confirm-delete"
-              @click="handleConfirm"
-              :disabled="loading"
-            >
+            <button class="btn btn-cancel" @click="handleCancel" :disabled="loading">Отмена</button>
+            <button class="btn btn-confirm-delete" @click="handleConfirm" :disabled="loading">
               {{ loading ? "Удаление..." : "Удалить" }}
             </button>
           </div>

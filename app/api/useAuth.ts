@@ -29,10 +29,7 @@ export const useAuth = () => {
   const authApiUrl = config.public.authApiBaseUrl;
   const authTokenCookieName = config.public.authTokenCookieName || "auth_token";
 
-  const authTokenCookie = useCookie<string | null>(
-    authTokenCookieName,
-    cookieOptions,
-  );
+  const authTokenCookie = useCookie<string | null>(authTokenCookieName, cookieOptions);
   const userInfo = useState<AuthUserInfo | null>(USER_INFO_KEY, () => null);
 
   const loadUserInfo = async (): Promise<AuthUserInfo | null> => {
@@ -55,10 +52,7 @@ export const useAuth = () => {
     }
   };
 
-  const login = async (
-    name: string,
-    password: string,
-  ): Promise<AuthUserInfo | undefined> => {
+  const login = async (name: string, password: string): Promise<AuthUserInfo | undefined> => {
     const token = await $fetch<string>(`${authApiUrl}/auth/login`, {
       method: "POST",
       body: {
@@ -74,11 +68,7 @@ export const useAuth = () => {
     return info ?? undefined;
   };
 
-  const register = async (
-    name: string,
-    email: string,
-    password: string,
-  ): Promise<AuthUserInfo> => {
+  const register = async (name: string, email: string, password: string): Promise<AuthUserInfo> => {
     const token = await $fetch<string>(`${authApiUrl}/auth/register`, {
       method: "POST",
       body: {
