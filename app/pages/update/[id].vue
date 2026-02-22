@@ -3,20 +3,44 @@
     <h1>Обновить новость</h1>
 
     <template v-if="article">
-      <FieldForm v-model="article.title" type="text" label="Заголовок" placeholder="Введите заголовок новости" required />
-      <FieldForm v-model="article.content" type="textarea" label="Содержание" placeholder="Введите содержание новости" required />
-      <FieldForm v-model="article.summary" type="textarea" label="Краткое описание" placeholder="Введите краткое описание (опционально)" />
-      <FieldForm v-model="articleTagsInput" type="text" label="Теги (опционально)" placeholder="Введите теги через запятую, например: новости, технологии, спорт" />
+      <FieldForm
+        v-model="article.title"
+        type="text"
+        label="Заголовок"
+        placeholder="Введите заголовок новости"
+        required
+      />
+      <FieldForm
+        v-model="article.content"
+        type="textarea"
+        label="Содержание"
+        placeholder="Введите содержание новости"
+        required
+      />
+      <FieldForm
+        v-model="article.summary"
+        type="textarea"
+        label="Краткое описание"
+        placeholder="Введите краткое описание (опционально)"
+      />
+      <FieldForm
+        v-model="articleTagsInput"
+        type="text"
+        label="Теги (опционально)"
+        placeholder="Введите теги через запятую, например: новости, технологии, спорт"
+      />
     </template>
 
     <div v-if="errors" class="error-message">
       <div v-for="(error, i) of errors" :key="i">{{ error }}</div>
     </div>
 
-    <div class="success-message" v-if="updatedArticleId != undefined">Новость успешно сохранеа! ID: {{ updatedArticleId }}</div>
+    <div class="success-message" v-if="updatedArticleId != undefined">
+      Новость успешно сохранеа! ID: {{ updatedArticleId }}
+    </div>
 
     <div class="buttons">
-      <button class="btn btn-blue" :disabled="updateProcessed" @click="handleCreate">
+      <button class="btn btn-blue" :disabled="updateProcessed" @click="create">
         <span v-if="updateProcessed">Сохранить...</span>
         <span v-else>Сохранить изменения</span>
       </button>
@@ -31,72 +55,45 @@
 <script setup lang="ts">
 import type { ArticleUpdateRequest } from "~/api/generated";
 import { useApi } from "~/api/useApi";
+import { errorToStrings } from "~/utils/error";
+import { useUpdateArticle } from "~/composables/useUpdateArticle";
 
-const route = useRoute();
 const api = useApi();
 
-const errors = ref<string[]>();
+const route = useRoute();
+const id = computed(() => Number(route.params.id));
+let article = ref<ArticleUpdateRequest>();
 
-let updateProcessed = ref(false);
-const updatedArticleId = ref<number>();
+let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
+  useUpdateArticle(article);
 
-const article = ref<ArticleUpdateRequest>();
-const articleTagsInput = ref<string>("");
+const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdateRequest>(
+  () => `update-article-${id.value}`,
+  async () => {
+    errors.value = undefined;
 
-onMounted(() => {
-  loadArticle();
-});
+    const numId = id.value;
+    if (isNaN(numId)) throw new Error("Не валидный ID статьи");
 
-const loadArticle = async () => {
-  const id = Number(route.params.id);
-  if (isNaN(id)) throw new Error("Неверный ID статьи");
+    const data = await api.getArticle(numId);
 
-  await api
-    .getArticle(id)
-    .then((data) => {
-      article.value = {
-        id: data.id ?? 0,
-        content: data.content ?? "",
-        title: data.title ?? "",
-        summary: data.summary ?? "",
-        tags: data.tags ?? [],
-      };
+    articleTagsInput.value = data?.tags?.join(", ") ?? "";
 
-      articleTagsInput.value = article.value.tags?.join(", ") ?? "";
-    })
-    .catch((err) => {
-      errors.value = errorToStrings(err);
-    });
-};
+    let nextArticle: ArticleUpdateRequest = {
+      id: data?.id ?? 0,
+      content: data?.content ?? "",
+      title: data?.title ?? "",
+      summary: data?.summary ?? "",
+      tags: data?.tags ?? [],
+    };
 
-let handleCreate = async () => {
-  if (updateProcessed.value) return;
+    return nextArticle;
+  },
+  { watch: [id], default: () => undefined },
+);
 
-  if (!article.value) return;
-
-  errors.value = undefined;
-  updatedArticleId.value = undefined;
-
-  let parsedTags = parseTags(articleTagsInput.value);
-
-  await api
-    .updateArticle({
-      id: article.value.id,
-      title: article.value.title,
-      content: article.value.content,
-      summary: article.value.summary,
-      tags: parsedTags.length > 0 ? parsedTags : undefined,
-    })
-    .then((articleNew) => {
-      updatedArticleId.value = articleNew.id;
-    })
-    .catch((err) => {
-      errors.value = errorToStrings(err);
-    })
-    .finally(() => {
-      updateProcessed.value = false;
-    });
-};
+watch(loadError, (e) => (errors.value = errorToStrings(e)), { immediate: true });
+watch(articleData, (val) => (article.value = val), { immediate: true });
 </script>
 
 <style scoped>

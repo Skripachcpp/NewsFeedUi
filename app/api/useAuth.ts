@@ -11,39 +11,54 @@ export interface AuthResponse {
 }
 
 export type AuthUserInfo = {
-  token?: string;
   name: string;
 };
 
-function getInfoFromLocalStorage(storageKey: string): AuthUserInfo | undefined {
-  const userJson = localStorage.getItem(storageKey) ?? undefined;
-  let userInfo = undefined;
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
+const cookieOptions = {
+  maxAge: COOKIE_MAX_AGE,
+  path: "/",
+  sameSite: "lax" as const,
+  secure: process.env.NODE_ENV === "production",
+};
 
-  if (userJson) {
-    try {
-      userInfo = JSON.parse(userJson) as AuthUserInfo;
-    } catch (e) {
-      console.error("Не удалось получить данные о пользователе", e);
-    }
-  }
-
-  return userInfo;
-}
-
-function setInfoFromLocalStorage(info: AuthUserInfo | undefined, storageKey: string) {
-  if (info == null) localStorage.removeItem(storageKey);
-  else localStorage.setItem(storageKey, JSON.stringify(info));
-}
+const USER_INFO_KEY = "auth_user_info";
 
 export const useAuth = () => {
   const config = useRuntimeConfig();
   const authApiUrl = config.public.authApiBaseUrl;
-  const authUserStorageKey = config.public.authUserStorageKey || "auth_user";
+  const authTokenCookieName = config.public.authTokenCookieName || "auth_token";
 
-  const userInfo = useState<AuthUserInfo | undefined>(authUserStorageKey, () => undefined);
-  userInfo.value = getInfoFromLocalStorage(authUserStorageKey);
+  const authTokenCookie = useCookie<string | null>(
+    authTokenCookieName,
+    cookieOptions,
+  );
+  const userInfo = useState<AuthUserInfo | null>(USER_INFO_KEY, () => null);
 
-  const login = async (name: string, password: string): Promise<AuthUserInfo | undefined> => {
+  const loadUserInfo = async (): Promise<AuthUserInfo | null> => {
+    const token = authTokenCookie.value;
+    if (!token) {
+      userInfo.value = null;
+      return null;
+    }
+
+    try {
+      const info = await $fetch<AuthUserInfo>(`${authApiUrl}/auth/info`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      userInfo.value = info;
+      return info;
+    } catch {
+      userInfo.value = null;
+      return null;
+    }
+  };
+
+  const login = async (
+    name: string,
+    password: string,
+  ): Promise<AuthUserInfo | undefined> => {
     const token = await $fetch<string>(`${authApiUrl}/auth/login`, {
       method: "POST",
       body: {
@@ -54,17 +69,16 @@ export const useAuth = () => {
 
     if (token == null) return undefined;
 
-    let info: AuthUserInfo = {
-      token,
-      name,
-    };
-
-    userInfo.value = info;
-    setInfoFromLocalStorage(info, authUserStorageKey);
-    return info;
+    authTokenCookie.value = token;
+    const info = await loadUserInfo();
+    return info ?? undefined;
   };
 
-  const register = async (name: string, email: string, password: string): Promise<AuthUserInfo> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<AuthUserInfo> => {
     const token = await $fetch<string>(`${authApiUrl}/auth/register`, {
       method: "POST",
       body: {
@@ -74,34 +88,29 @@ export const useAuth = () => {
       },
     });
 
-    let info: AuthUserInfo = {
-      token,
-      name,
-    };
-
-    setInfoFromLocalStorage(info, authUserStorageKey);
-    userInfo.value = info;
-    return info;
+    authTokenCookie.value = token;
+    const info = await loadUserInfo();
+    return info ?? { name };
   };
 
   const logout = () => {
-    setInfoFromLocalStorage(undefined, authUserStorageKey);
-    userInfo.value = undefined;
-
+    authTokenCookie.value = null;
+    userInfo.value = null;
     navigateTo("/");
   };
 
-  const isAuthenticated = computed(() => !!userInfo.value);
-  const token = computed(() => userInfo?.value?.token);
-  const userName = computed(() => userInfo?.value?.name);
+  const isAuthenticated = computed(() => !!authTokenCookie.value);
+  const userName = computed(() => userInfo.value?.name ?? undefined);
+  const token = computed(() => authTokenCookie.value ?? "");
 
   return {
-    token,
     userName,
     userInfo,
     isAuthenticated,
+    token,
     login,
     register,
     logout,
+    loadUserInfo,
   };
 };

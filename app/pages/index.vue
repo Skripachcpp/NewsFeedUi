@@ -5,7 +5,7 @@
       <NuxtLink to="/create" class="btn btn-blue news-btn-create">Создать</NuxtLink>
     </div>
 
-    <div v-if="loading" class="loading">
+    <div v-if="pending" class="pending">
       <p>Загрузка новостей...</p>
     </div>
 
@@ -43,10 +43,10 @@
 
     <ConfirmDeleteModal
       :is-open="deleteArticleId != null"
-      :loading="false"
+      :pending="false"
       item-type="новость"
       @confirm="confirmDeleteArticle"
-      @cancel="() => {deleteArticleId = undefined;}"
+      @cancel="deleteArticleId = undefined"
     />
   </div>
 </template>
@@ -55,37 +55,25 @@
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
 import { useAuth } from "~/api/useAuth";
-
-let deleteArticleId = ref<number>();
-
-const loading = ref(false);
-const error = ref<string>();
-const articles = ref<NewsArticleDto[]>([]);
+import { useDeleteArticle } from "~/composables/useDeleteArticle";
+import { dateFormat } from "~/utils/date";
 
 const api = useApi();
-let {isAuthenticated} = useAuth();
 
-const loadNews = async () => {
-  loading.value = true;
-  error.value = undefined;
-  articles.value = await api
-    .getArticles()
-    .catch((err) => {
-      error.value = err.title || "Ошибка при загрузке новостей";
-      return [];
-    })
-    .finally(() => (loading.value = false));
-};
+let { isAuthenticated } = useAuth();
 
-let confirmDeleteArticle = async () => {
-  if (deleteArticleId.value == null) return;
+const {
+  data: articles,
+  pending,
+  error: loadError,
+  refresh: loadNews,
+} = await useAsyncData<NewsArticleDto[]>("news-list", api.getArticles, {
+  default: () => [],
+});
 
-  await api.deleteArticle(deleteArticleId.value);
-  articles.value = articles.value.filter(it => it.id != deleteArticleId.value)
-  deleteArticleId.value = undefined;
-}
+let error = computed(() => errorToString(loadError) || "Ошибка при загрузке новостей");
 
-onMounted(() => loadNews());
+let { deleteArticleId, confirmDeleteArticle } = useDeleteArticle(articles);
 </script>
 
 <style scoped>

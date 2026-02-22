@@ -6,12 +6,30 @@
       <div class="form">
         <div class="form-group">
           <label for="username" class="form-label">Имя пользователя</label>
-          <input id="username" v-model="form.username" name="username" type="text" required class="form-input" placeholder="Введите имя пользователя" :disabled="loading" />
+          <input
+            id="username"
+            v-model="form.username"
+            name="username"
+            type="text"
+            required
+            class="form-input"
+            placeholder="Введите имя пользователя"
+            :disabled="loading"
+          />
         </div>
 
         <div class="form-group">
           <label for="password" class="form-label">Пароль</label>
-          <input id="password" v-model="form.password" name="password" type="password" required class="form-input" placeholder="Введите пароль" :disabled="loading" />
+          <input
+            id="password"
+            v-model="form.password"
+            name="password"
+            type="password"
+            required
+            class="form-input"
+            placeholder="Введите пароль"
+            :disabled="loading"
+          />
         </div>
 
         <div v-if="error" class="error-message">
@@ -19,7 +37,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" :disabled="loading" class="btn btn-primary" @click.prevent="handleLogin">
+          <button type="submit" :disabled="loading" class="btn btn-primary" @click.prevent="login">
             <span v-if="loading">Вход...</span>
             <span v-else>Войти</span>
           </button>
@@ -35,7 +53,6 @@
 </template>
 
 <script setup lang="ts">
-// это вайп
 import { useAuth } from "~/api/useAuth";
 import { errorToString } from "~/utils/error";
 
@@ -43,7 +60,7 @@ definePageMeta({
   layout: false,
 });
 
-const { login, isAuthenticated } = useAuth();
+const { login: loginUser, isAuthenticated } = useAuth();
 const router = useRouter();
 
 const form = reactive({
@@ -51,19 +68,18 @@ const form = reactive({
   password: "",
 });
 
-const error = ref("");
+const error = ref<string>();
 const loading = ref(false);
 
-// Если уже авторизован, перенаправляем на главную
 if (isAuthenticated.value) {
   router.push("/");
 }
 
-const handleLogin = async () => {
+const login = async () => {
   error.value = "";
   loading.value = true;
 
-  await login(form.username, form.password)
+  await loginUser(form.username, form.password)
     .then(() => {
       router.push("/");
     })

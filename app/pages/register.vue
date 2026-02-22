@@ -6,17 +6,44 @@
       <div class="form">
         <div class="form-group">
           <label for="username" class="form-label">Имя пользователя</label>
-          <input id="username" v-model="form.username" name="username" type="text" required class="form-input" placeholder="Введите имя пользователя" :disabled="loading" />
+          <input
+            id="username"
+            v-model="form.username"
+            name="username"
+            type="text"
+            required
+            class="form-input"
+            placeholder="Введите имя пользователя"
+            :disabled="loading"
+          />
         </div>
 
         <div class="form-group">
           <label for="email" class="form-label">Email</label>
-          <input id="email" v-model="form.email" name="email" type="email" required class="form-input" placeholder="email@example.com" :disabled="loading" />
+          <input
+            id="email"
+            v-model="form.email"
+            name="email"
+            type="email"
+            required
+            class="form-input"
+            placeholder="email@example.com"
+            :disabled="loading"
+          />
         </div>
 
         <div class="form-group">
           <label for="password" class="form-label">Пароль</label>
-          <input id="password" v-model="form.password" name="password" type="password" required class="form-input" placeholder="Введите пароль" :disabled="loading" />
+          <input
+            id="password"
+            v-model="form.password"
+            name="password"
+            type="password"
+            required
+            class="form-input"
+            placeholder="Введите пароль"
+            :disabled="loading"
+          />
         </div>
 
         <div v-if="error" class="error-message">
@@ -24,7 +51,12 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" :disabled="loading" class="btn btn-primary" @click.prevent="handleRegister">
+          <button
+            type="submit"
+            :disabled="loading"
+            class="btn btn-primary"
+            @click.prevent="register"
+          >
             <span v-if="loading">Регистрация...</span>
             <span v-else>Зарегистрироваться</span>
           </button>
@@ -40,15 +72,16 @@
 </template>
 
 <script setup lang="ts">
-// это вайп
 import { useAuth } from "~/api/useAuth";
+import { errorToString } from "~/utils/error";
 
 definePageMeta({
   layout: false,
 });
 
-const { register, isAuthenticated } = useAuth();
 const router = useRouter();
+
+const { register: registerUser, isAuthenticated } = useAuth();
 
 const form = reactive({
   username: "",
@@ -56,19 +89,18 @@ const form = reactive({
   password: "",
 });
 
-const error = ref("");
+const error = ref<string>();
 const loading = ref(false);
 
-// Если уже авторизован, перенаправляем на главную
 if (isAuthenticated.value) {
   router.push("/");
 }
 
-const handleRegister = async () => {
+const register = async () => {
   error.value = "";
   loading.value = true;
 
-  await register(form.username, form.email, form.password)
+  await registerUser(form.username, form.email, form.password)
     .then(() => {
       router.push("/");
     })

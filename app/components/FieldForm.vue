@@ -4,16 +4,16 @@
       {{ label }}
       <span v-if="required" class="required">*</span>
     </label>
-    <input 
-      v-if="type !== 'textarea'" 
-      :type="type" 
-      :value="modelValue" 
-      :placeholder="placeholder" 
-      :required="required" 
-      class="input" 
-      v-bind="$attrs" 
-      @input="handleInput" 
-    >
+    <input
+      v-if="type !== 'textarea'"
+      :type="type"
+      :value="modelValue"
+      :placeholder="placeholder"
+      :required="required"
+      class="input"
+      v-bind="$attrs"
+      @input="handleInput"
+    />
     <textarea
       v-else
       :value="modelValue"
@@ -22,27 +22,32 @@
       :rows="rows"
       class="textarea"
       v-bind="$attrs"
-      @input="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
+      @input="
+        $emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)
+      "
     />
   </div>
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  label?: string;
-  required?: boolean;
-  type?: "text" | "number" | "url" | "textarea";
-  modelValue?: string | number | null;
-  placeholder?: string;
-  rows?: number;
-}>(), {
-  label: "",
-  type: "text",
-  required: false,
-  rows: 3,
-  placeholder: "",
-  modelValue: ""
-});
+const props = withDefaults(
+  defineProps<{
+    label?: string;
+    required?: boolean;
+    type?: "text" | "number" | "url" | "textarea";
+    modelValue?: string | number | null;
+    placeholder?: string;
+    rows?: number;
+  }>(),
+  {
+    label: "",
+    type: "text",
+    required: false,
+    rows: 3,
+    placeholder: "",
+    modelValue: "",
+  },
+);
 
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | null];
@@ -50,10 +55,13 @@ const emit = defineEmits<{
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  const value = props.type === "number" 
-    ? (target.value === "" ? null 
-    : Number(target.value)) : target.value;
-    
+  const value =
+    props.type === "number"
+      ? target.value === ""
+        ? null
+        : Number(target.value)
+      : target.value;
+
   emit("update:modelValue", value);
 };
 </script>

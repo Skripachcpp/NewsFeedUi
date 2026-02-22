@@ -1,7 +1,9 @@
 export function errorToStrings(err: any): string[] {
-  if (typeof err == "string") return [err]
+  if (typeof err == "string") return [err];
 
-  let errors = (err?.data?.errors ?? err?.body?.errors) as { [fieldName: string]: string[] };
+  let errors = (err?.data?.errors ?? err?.body?.errors) as {
+    [fieldName: string]: string[];
+  };
   if (errors && Object.keys(errors).length > 0) {
     let errorMessages = [];
 
@@ -17,6 +19,7 @@ export function errorToStrings(err: any): string[] {
     }
   }
 
+  if (err?.title) return [err.title];
   if (err?.data?.title) return [err.data.title];
   if (err?.body?.title) return [err.body.title];
   if (typeof err?.data == "string") return [err.data];
@@ -27,6 +30,6 @@ export function errorToStrings(err: any): string[] {
   return ["Ошибка"];
 }
 
-export function errorToString(err: any): string {
-  return errorToStrings(err)?.join(", ")
+export function errorToString(err: any, def = ""): string | undefined {
+  return err ? errorToStrings(err)?.join(", ") || def : undefined;
 }

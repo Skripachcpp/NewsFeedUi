@@ -1,4 +1,12 @@
-import { NewsService, TagsService, OpenAPI, type NewsArticleDto, type ArticleCreateRequest, type ArticleUpdateRequest, type TagDto } from "~/api/generated";
+import {
+  NewsService,
+  TagsService,
+  OpenAPI,
+  type NewsArticleDto,
+  type ArticleCreateRequest,
+  type ArticleUpdateRequest,
+  type TagDto,
+} from "~/api/generated";
 import { useAuth } from "./useAuth";
 
 export const useApi = () => {
@@ -7,15 +15,11 @@ export const useApi = () => {
     OpenAPI.BASE = config.public.apiBaseUrl;
   }
 
-  // токен авторизации
   const auth = useAuth();
-  OpenAPI.TOKEN = async () => {
-    return auth.token.value ?? "";
-  };
-  
+  OpenAPI.TOKEN = async () => auth.token.value ?? "";
 
   const getArticles = async (): Promise<NewsArticleDto[]> => {
-    // еще и пагинацию на фронте реализовывать наверное лишнее
+    // пока без пагинации
     return (await NewsService.newsGetArticles())?.items ?? [];
   };
 
@@ -23,11 +27,15 @@ export const useApi = () => {
     return await NewsService.newsGetArticle(id);
   };
 
-  const createArticle = async (requestBody: ArticleCreateRequest): Promise<NewsArticleDto> => {
+  const createArticle = async (
+    requestBody: ArticleCreateRequest,
+  ): Promise<NewsArticleDto> => {
     return await NewsService.newsCreateArticle(requestBody);
   };
 
-  const updateArticle = async (requestBody: ArticleUpdateRequest): Promise<NewsArticleDto> => {
+  const updateArticle = async (
+    requestBody: ArticleUpdateRequest,
+  ): Promise<NewsArticleDto> => {
     return await NewsService.newsUpdateArticle(requestBody);
   };
 

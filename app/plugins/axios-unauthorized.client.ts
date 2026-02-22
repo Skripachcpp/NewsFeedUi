@@ -2,7 +2,8 @@ import axios from "axios";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
-  const authUserStorageKey = config.public.authUserStorageKey || "auth_user";
+  const authTokenCookieName = config.public.authTokenCookieName || "auth_token";
+  const authTokenCookie = useCookie(authTokenCookieName, { path: "/" });
 
   axios.interceptors.response.use(
     (response) => response,
@@ -10,7 +11,9 @@ export default defineNuxtPlugin(() => {
       if (error.response?.status === 401) {
         const route = useRoute();
         if (route.path !== "/login" && route.path !== "/register") {
-          localStorage.removeItem(authUserStorageKey);
+          authTokenCookie.value = null;
+          const userInfoState = useState<unknown>("auth_user_info", () => null);
+          userInfoState.value = null;
           navigateTo("/login");
         }
       }

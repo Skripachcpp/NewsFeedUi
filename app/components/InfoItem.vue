@@ -27,4 +27,3 @@ defineProps<{
   color: #555;
 }
 </style>
-

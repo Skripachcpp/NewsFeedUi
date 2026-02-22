@@ -1,0 +1,7 @@
+{
+  "cSpell.words": ["unref"],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.wordWrapColumn": 100,
+  "editor.rulers": [100]
+}

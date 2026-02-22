@@ -5,34 +5,37 @@
         <div class="modal-container">
           <div class="modal-header">
             <h2 class="modal-title">Подтверждение удаления</h2>
-            <button class="modal-close" @click="handleCancel" aria-label="Закрыть">
+            <button
+              class="modal-close"
+              @click="handleCancel"
+              aria-label="Закрыть"
+            >
               ×
             </button>
           </div>
-          
+
           <div class="modal-body">
             <p class="modal-message">
-              Вы уверены, что хотите удалить {{ itemType }}<strong v-if="title"> "{{ title }}"</strong>?
+              Вы уверены, что хотите удалить {{ itemType
+              }}<strong v-if="title"> "{{ title }}"</strong>?
             </p>
-            <p class="modal-warning">
-              Это действие нельзя отменить.
-            </p>
+            <p class="modal-warning">Это действие нельзя отменить.</p>
           </div>
-          
+
           <div class="modal-footer">
-            <button 
-              class="btn btn-cancel" 
+            <button
+              class="btn btn-cancel"
               @click="handleCancel"
               :disabled="loading"
             >
               Отмена
             </button>
-            <button 
-              class="btn btn-confirm-delete" 
+            <button
+              class="btn btn-confirm-delete"
               @click="handleConfirm"
               :disabled="loading"
             >
-              {{ loading ? 'Удаление...' : 'Удалить' }}
+              {{ loading ? "Удаление..." : "Удалить" }}
             </button>
           </div>
         </div>
@@ -42,27 +45,30 @@
 </template>
 
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  isOpen: boolean
-  title?: string
-  loading?: boolean
-  itemType?: string
-}>(), {
-  itemType: 'новость'
-})
+const props = withDefaults(
+  defineProps<{
+    isOpen: boolean;
+    title?: string;
+    loading?: boolean;
+    itemType?: string;
+  }>(),
+  {
+    itemType: "новость",
+  },
+);
 
 const emit = defineEmits<{
-  confirm: []
-  cancel: []
-}>()
+  confirm: [];
+  cancel: [];
+}>();
 
 const handleConfirm = () => {
-  emit('confirm')
-}
+  emit("confirm");
+};
 
 const handleCancel = () => {
-  emit('cancel')
-}
+  emit("cancel");
+};
 </script>
 
 <style scoped>
@@ -213,7 +219,9 @@ const handleCancel = () => {
 
 .modal-enter-active .modal-container,
 .modal-leave-active .modal-container {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .modal-enter-from,
@@ -252,5 +260,3 @@ const handleCancel = () => {
   }
 }
 </style>
-
-

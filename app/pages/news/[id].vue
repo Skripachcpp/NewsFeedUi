@@ -2,7 +2,7 @@
   <div class="article-page">
     <NuxtLink to="/" class="btn btn-link">← Вернуться к списку</NuxtLink>
 
-    <div v-if="loading" class="loading">
+    <div v-if="pending" class="pending">
       <p>Загрузка новостей...</p>
     </div>
     <div v-else-if="error" class="error">
@@ -26,33 +26,28 @@
 <script setup lang="ts">
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
-
-const loading = ref(false);
-const error = ref<string>();
-const article = ref<NewsArticleDto>();
+import { dateFormat } from "~/utils/date";
 
 const route = useRoute();
 const api = useApi();
 
-const loadNew = async () => {
-  loading.value = true;
-  error.value = undefined;
+const id = computed(() => Number(route.params.id));
 
-  const id = Number(route.params.id);
-  if (isNaN(id)) throw new Error("Неверный ID статьи");
+const {
+  data: article,
+  pending,
+  error: loadError,
+} = await useAsyncData<NewsArticleDto | null>(
+  () => `news-article-${id.value}`,
+  async () => {
+    const numId = id.value;
+    if (isNaN(numId)) throw new Error("Неверный ID статьи");
+    return await api.getArticle(numId);
+  },
+  { watch: [id], default: () => null },
+);
 
-  article.value = await api
-    .getArticle(id)
-    .catch((err) => {
-      error.value = err.title || "Ошибка при загрузке новостей";
-      return undefined;
-    })
-    .finally(() => {
-      loading.value = false;
-    });
-};
-
-onMounted(() => loadNew());
+let error = computed(() => errorToString(loadError, "Ошибка при загрузке новостей"));
 </script>
 
 <style scoped>

@@ -6,12 +6,12 @@
         <h1>Теги</h1>
       </div>
 
-      <div v-if="loadTagsProcessed" class="loading">
+      <div v-if="pendingTags" class="loading">
         <p>Загрузка тегов...</p>
       </div>
 
-      <div v-else-if="error" class="error">
-        <p>{{ error }}</p>
+      <div v-else-if="error || deleteError" class="error">
+        <p>{{ error || deleteError }}</p>
         <button class="btn btn-secondary" @click="loadTags">Попробовать снова</button>
       </div>
 
@@ -26,14 +26,15 @@
               <h3 class="tag-name">{{ tag.name }}</h3>
             </div>
             <div class="tag-actions">
-              <button 
-                v-if="tag.id" 
-                class="btn btn-delete" 
-                :disabled="deletingId === tag.id" 
-                @click="() => {
-                  tagToDelete = { id: tag.id ?? -1, name: tag.name ?? '' };
-                  deleteModalOpen = true;
-                }"
+              <button
+                v-if="tag.id"
+                class="btn btn-delete"
+                :disabled="deletingId === tag.id"
+                @click="
+                  () => {
+                    tagToDelete = { id: tag.id ?? -1, name: tag.name ?? '' };
+                  }
+                "
               >
                 {{ deletingId === tag.id ? "Удаление..." : "Удалить" }}
               </button>
@@ -44,72 +45,38 @@
     </div>
 
     <ConfirmDeleteModal
-      :is-open="deleteModalOpen"
+      :is-open="!!tagToDelete"
       :title="tagToDelete?.name || ''"
       :loading="deletingId != null"
       item-type="тег"
       @confirm="confirmDelete"
-      @cancel="
-        () => {
-          deleteModalOpen = false;
-          tagToDelete = undefined;
-        }
-      "
+      @cancel="tagToDelete = undefined"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import { useApi } from "~/api/useApi";
 import type { TagDto } from "~/api/generated";
+import { errorToString } from "~/utils/error";
+import { useDeleteTags } from "~/composables/useDeleteTags";
 
 definePageMeta({
   layout: "default",
 });
 
 const api = useApi();
-const tags = ref<TagDto[]>([]);
 
-const error = ref<string>();
-const deletingId = ref<number>();
-const deleteModalOpen = ref(false);
-const tagToDelete = ref<{ id: number; name: string }>();
+const {
+  data: tags,
+  pending: pendingTags,
+  error: loadError,
+  refresh: loadTags,
+} = await useAsyncData<TagDto[]>("tags-list", api.getTags, { default: () => [] });
 
-const loadTagsProcessed = ref(true);
-const loadTags = async () => {
-  loadTagsProcessed.value = true;
-  error.value = undefined;
+let error = computed(() => errorToString(loadError));
 
-  await api.getTags().then((data) => {
-    tags.value = data
-  }).catch((err) => {
-    error.value = errorToString(err);
-  }).finally(() => {
-    loadTagsProcessed.value = false;
-  })
-};
-
-const confirmDelete = async () => {
-  if (!tagToDelete.value) return;
-
-  const { id } = tagToDelete.value;
-
-  try {
-    deletingId.value = id;
-    await api.deleteTag(id);
-    tags.value = tags.value.filter((tag) => tag.id !== id);
-
-    deleteModalOpen.value = false;
-    tagToDelete.value = undefined;
-  } catch (err: any) {
-    error.value = errorToString(err);
-  } finally {
-    deletingId.value = undefined;
-  }
-};
-
-onMounted(() => loadTags());
+let { deletingId, deleteError, tagToDelete, confirmDelete } = useDeleteTags(tags);
 </script>
 
 <style scoped>
@@ -159,7 +126,9 @@ onMounted(() => loadTags());
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .tag-card:hover {
