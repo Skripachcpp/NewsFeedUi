@@ -36,7 +36,7 @@
     </div>
 
     <div class="success-message" v-if="updatedArticleId != undefined">
-      Новость успешно сохранеа! ID: {{ updatedArticleId }}
+      Новость успешно сохранена! ID: {{ updatedArticleId }}
     </div>
 
     <div class="buttons">
@@ -64,9 +64,6 @@ const route = useRoute();
 const id = computed(() => Number(route.params.id));
 let article = ref<ArticleUpdateRequest>();
 
-let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
-  useUpdateArticle(article);
-
 const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdateRequest>(
   () => `update-article-${id.value}`,
   async () => {
@@ -89,6 +86,9 @@ const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdate
   },
   { watch: [id], default: () => undefined },
 );
+
+let { errors, articleTagsInput, updateProcessed, updatedArticleId, create } =
+  useUpdateArticle(article);
 
 watch(loadError, (e) => (errors.value = errorToStrings(e)), { immediate: true });
 watch(articleData, (val) => (article.value = val), { immediate: true });

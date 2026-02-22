@@ -1,5 +1,6 @@
 import type { TagDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
+import { errorToString } from "~/utils/error";
 
 export function useDeleteTags(tags: Ref<TagDto[]>) {
   const api = useApi();

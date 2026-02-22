@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="isAuthenticated" class="heder">
+    <div v-if="isAuthenticated" class="header">
       <NuxtLink to="/tags" class="btn btn-red news-btn-create">Теги</NuxtLink>
       <NuxtLink to="/create" class="btn btn-blue news-btn-create">Создать</NuxtLink>
     </div>
@@ -57,6 +57,7 @@ import { useApi } from "~/api/useApi";
 import { useAuth } from "~/api/useAuth";
 import { useDeleteArticle } from "~/composables/useDeleteArticle";
 import { dateFormat } from "~/utils/date";
+import { errorToString } from "~/utils/error";
 
 const api = useApi();
 
@@ -83,7 +84,7 @@ let { deleteArticleId, confirmDeleteArticle } = useDeleteArticle(articles);
 </script>
 
 <style scoped>
-.heder {
+.header {
   display: flex;
   align-items: center;
   justify-content: flex-end;

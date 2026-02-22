@@ -27,6 +27,7 @@
 import type { NewsArticleDto } from "~/api/generated";
 import { useApi } from "~/api/useApi";
 import { dateFormat } from "~/utils/date";
+import { errorToString } from "~/utils/error";
 
 const route = useRoute();
 const api = useApi();
