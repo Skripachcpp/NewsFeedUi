@@ -86,7 +86,7 @@ const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdate
 
     return nextArticle;
   },
-  { watch: [id], default: () => undefined },
+  { watch: [id] },
 );
 
 watch(loadError, (e) => (errors.value = errorToStrings(e)), { immediate: true });
