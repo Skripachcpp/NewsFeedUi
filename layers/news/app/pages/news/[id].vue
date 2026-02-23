@@ -42,7 +42,7 @@ const {
   () => `news-article-${id.value}`,
   async () => {
     const numId = id.value;
-    if (isNaN(numId)) throw new Error("Неверный ID статьи");
+    if (isNaN(numId)) throw new Error("Не валидный ID статьи");
     return await api.getArticle(numId);
   },
   { watch: [id], default: () => null },
