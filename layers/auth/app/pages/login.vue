@@ -37,7 +37,12 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" :disabled="loading" class="btn btn-primary" @click.prevent="login">
+          <button
+            type="submit"
+            :disabled="loading"
+            class="btn btn-primary"
+            @click.prevent="handlerLogin"
+          >
             <span v-if="loading">Вход...</span>
             <span v-else>Войти</span>
           </button>
@@ -60,7 +65,7 @@ definePageMeta({
   layout: false,
 });
 
-const { login: loginUser, isAuthenticated } = useAuth();
+const { login, isAuthenticated } = useAuth();
 const router = useRouter();
 
 const form = reactive({
@@ -75,11 +80,11 @@ if (isAuthenticated.value) {
   router.push("/");
 }
 
-const login = async () => {
+const handlerLogin = async () => {
   error.value = "";
   loading.value = true;
 
-  await loginUser(form.username, form.password)
+  await login(form.username, form.password)
     .then(() => {
       router.push("/");
     })

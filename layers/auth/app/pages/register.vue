@@ -55,7 +55,7 @@
             type="submit"
             :disabled="registerPending"
             class="btn btn-primary"
-            @click.prevent="register"
+            @click.prevent="handlerRegister"
           >
             <span v-if="registerPending">Регистрация...</span>
             <span v-else>Зарегистрироваться</span>
@@ -81,7 +81,7 @@ definePageMeta({
 
 const router = useRouter();
 
-const { register: registerUser, isAuthenticated } = useAuth();
+const { register, isAuthenticated } = useAuth();
 
 const form = reactive({
   username: "",
@@ -96,11 +96,11 @@ if (isAuthenticated.value) {
   router.push("/");
 }
 
-const register = async () => {
+const handlerRegister = async () => {
   error.value = "";
   registerPending.value = true;
 
-  await registerUser(form.username, form.email, form.password)
+  await register(form.username, form.email, form.password)
     .then(() => {
       router.push("/");
     })
