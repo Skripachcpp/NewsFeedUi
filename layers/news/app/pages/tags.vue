@@ -12,7 +12,7 @@
 
       <div v-else-if="error || deleteError" class="error">
         <p>{{ error || deleteError }}</p>
-        <button class="btn btn-secondary" @click="loadTags">Попробовать снова</button>
+        <button class="btn btn-secondary" @click="handlerLoadTags">Попробовать снова</button>
       </div>
 
       <div v-else-if="tags.length === 0" class="empty">
@@ -68,6 +68,10 @@ const {
   error: loadError,
   refresh: loadTags,
 } = await useAsyncData<TagDto[]>("tags-list", api.getTags, { default: () => [] });
+
+let handlerLoadTags = () => {
+  loadTags();
+};
 
 let error = computed(() => errorToString(loadError));
 

@@ -11,7 +11,7 @@
 
     <div v-else-if="error" class="error">
       <p>{{ error }}</p>
-      <button class="btn btn-link" @click="loadNews">Попробовать снова</button>
+      <button class="btn btn-link" @click="handlerLoadNews">Попробовать снова</button>
     </div>
 
     <div v-else class="news-list">
@@ -73,6 +73,10 @@ const {
   },
   { default: () => [] },
 );
+
+let handlerLoadNews = () => {
+  loadNews();
+};
 
 let error = computed(() => errorToString(loadError, "Ошибка при загрузке новостей"));
 

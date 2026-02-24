@@ -89,7 +89,13 @@ const { data: articleData, error: loadError } = await useAsyncData<ArticleUpdate
   { watch: [id] },
 );
 
-watch(loadError, (e) => (errors.value = errorToStrings(e)), { immediate: true });
+watch(
+  loadError,
+  (e) => {
+    errors.value = errorToStrings(e);
+  },
+  { immediate: true },
+);
 watch(articleData, (val) => (article.value = val), { immediate: true });
 </script>
 

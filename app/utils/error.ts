@@ -1,4 +1,5 @@
-export function errorToStrings(err: any): string[] {
+export function errorToStrings(err: any): string[] | undefined {
+  if (err == null) return undefined;
   if (typeof err == "string") return [err];
 
   let errors = (err?.data?.errors ?? err?.body?.errors) as {
